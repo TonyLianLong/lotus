@@ -29,7 +29,7 @@ function openSideBar(node) {
                 let mappedField = sideSection.fields[fieldKey];
                 console.log(node, mappedField);
                 return `
-                    <span>${fieldKey}</span> <input type="text" value="${deepSubscript(node, mappedField)}" />
+                    <span>${fieldKey}</span> <input type="text" value="${deepSubscript(node, mappedField)}" spellcheck="false" />
                 `;
             });
         } else {
