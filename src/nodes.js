@@ -19,19 +19,20 @@ function defaultSide(desc, args) {
     return [
         {
             "type": "html",
-            "title": "简介",
-            "html": `<p>${desc}</p>` + (args.link?`<a href="${args.link}"target="_blank">点这里查看详细说明</a>`:"")
+            "title": "Description", // "简介",
+            "html": `<p>${desc}</p>` + (args.link?`<a href="${args.link}"target="_blank">Click here for details</a>`:"") // (args.link?`<a href="${args.link}"target="_blank">点这里查看详细说明</a>`:"")
         },
         {
             "type": "props",
-            "title": "基本属性",
+            "title": "Properties", // "基本属性",
             "fields": {
-                "模块id": "name"
+                // "模块id": "name"
+                "Module ID": "name"
             }
         },
         ...(args.example ? [{
             "type": "text",
-            "title": "示例",
+            "title": "Example", // "示例",
             "text": args.example
         }] : [])
     ];
@@ -51,7 +52,7 @@ function simpleNodeDetails(name, desc, args) {
     };
 }
 
-const nodeDetailsDict = {
+const nodeDetailsDict_Paddle = {
     "conv": (data) => ({
         "name": "卷积层", "desc": `Filter (${data.filter.join(",")})`, "color": "#816C61", "side": [
             ...defaultSide("卷积层对上一层的输入进行一次卷积运算", {link: "https://www.paddlepaddle.org.cn/documentation/docs/zh/1.2/api_cn/api_guides/low_level/layers/conv.html#api-guide-conv"}),
@@ -70,6 +71,28 @@ const nodeDetailsDict = {
     "linear": simpleNodeDetails("线性运算", "线性运算(linear)会对前面层的输入进行矩阵乘法加上偏置运算"),
     "softmax": simpleNodeDetails("Softmax", "Softmax可以将实数范围内的输出值转为0到1之间的概率值", {link: "https://www.paddlepaddle.org.cn/documentation/docs/zh/1.2/api_cn/layers_cn.html#softmax", color: "#9355E8"})
 };
+
+const nodeDetailsDict_Torch = {
+    "conv": (data) => ({
+        "name": "Convolution (2D)", "desc": `Filter (${data.filter.join(",")})`, "color": "#816C61", "side": [
+            ...defaultSide("Apply Conv2D Op. to the last layer", {link: "https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d"}),
+            {
+                "type": "props",
+                "title": "Properties",
+                "fields": {
+                    "Filter": "data.filter"
+                }
+            }
+        ]
+    }),
+    "data": simpleNodeDetails("Data In", "The data input of the module", {color: "#EEE", textColor: "#000"}),
+    "out": simpleNodeDetails("Data Out", "The data output of the module", {color: "#EEE", textColor: "#000"}),
+    "flatten": simpleNodeDetails("Flatten", "Reshape the tensor to 1D", {example: "Input size: (128,10,10), output size: (128,100)"}),
+    "linear": simpleNodeDetails("Linear", "Apply a Linear Op with bias"),
+    "softmax": simpleNodeDetails("Softmax", "Turn real-valued logits into probabilities", {link: "https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html", color: "#9355E8"})
+};
+
+const nodeDetailsDict = nodeDetailsDict_Torch;
 
 function getNodeInfo(node) {
     if (typeof nodeDetailsDict[node.type] == "function") {
