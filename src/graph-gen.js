@@ -1,6 +1,6 @@
 import { colorPalette, getNodeInfo } from './nodes.js';
 
-function JSONToNodes(g, nodes, nodeDetailsDict) {
+function JSONToNodes(g, nodes) {
     let nodesArr = [];
     let edgesArr = [];
     for (let nodeItemKey of Object.keys(nodes)) {
@@ -32,7 +32,6 @@ function JSONToNodes(g, nodes, nodeDetailsDict) {
         }
         
         if (desc) {
-            console.log(`<name style="background-color: ${color}; color: ${ret.textColor}">${name}</name><desc>${desc}</desc>`);
             g.setNode(i, {
                 labelType: "html",
                 label: `<name style="background-color: ${color}; color: ${ret.textColor}">${name}</name><desc>${desc}</desc>`,

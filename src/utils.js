@@ -24,4 +24,16 @@ function deepSubscript(item, subscript) {
     return item;
 }
 
-export { deepSubscript };
+function downloadFile(type, content, name) {
+    // Type example: "application/json;charset=utf-8"
+    var blob = new Blob([content], {type}, name);
+    var blob_URL = URL.createObjectURL(blob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = blob_URL;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+export { deepSubscript, downloadFile };

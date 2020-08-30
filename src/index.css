@@ -20,7 +20,7 @@ body {
 
 .node-item {
     text-align: center;
-    cursor: default;
+    cursor: pointer;
 }
 
 .node-item name {
@@ -56,6 +56,27 @@ body {
     font-weight: 300;
 }
 
+.toolbar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 20px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.toolbar .btn {
+    color: #CACACA;
+    display: inline;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.toolbar .btn:hover {
+    color: #000;
+}
+
 .sidebar:hover, .sidebar:active, .sidebar:visited {
     text-decoration: none;
 }
@@ -66,6 +87,7 @@ body {
     margin: 0 10px;
     font-size: 18px;
     float: right;
+    cursor: pointer;
     font-weight: 100;
 }
 

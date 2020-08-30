@@ -2,14 +2,14 @@
 
 const nodes = {
     "data": {"type": "data", "to": "conv1"},
-    "conv1": {"type": "conv", "data": { "filter": [32, 3, 3, 3] }, "to": "conv2"},
-    "conv2": {"type": "conv", "data": { "filter": [32, 32, 1, 1] }, "to": "flatten"},
+    "conv1": {"type": "conv", "data": { "filter": [3, 3, 3] }, "to": "conv2"},
+    "conv2": {"type": "conv", "data": { "filter": [32, 1, 1] }, "to": "flatten"},
     "flatten" : {"type": "flatten", "to": "linear"},
-    "linear" : {"type": "linear", "data": { "width": 4096 }, "to": "softmax"},
+    "linear" : {"type": "linear", "data": { "input dim": 4096, "output dim": 4096 }, "to": "softmax"},
     "softmax" : {"type": "softmax", "to": "out"},
     "out": {"type": "out"}
 };
-  
+
 const colorPalette = ["#284376", "#4b1b16", "#353531", "#694434", "#AB5351", "#016FB9"];
 
 function defaultSide(desc, args) {
@@ -48,9 +48,12 @@ function simpleNodeDetails(name, desc, args) {
             ...defaultSide(desc, args)
         ],
         color: args.color,
-        textColor: args.textColor
+        textColor: args.textColor,
+        codeGen: args.codeGen
     };
 }
+
+const emptyCodeGen = () => { return ["", ""]; };
 
 const nodeDetailsDict_Paddle = {
     "conv": (data) => ({
@@ -83,13 +86,23 @@ const nodeDetailsDict_Torch = {
                     "Filter": "data.filter"
                 }
             }
-        ]
+        ], "codeGen": (node, inputVar) => [`self.${node.name} = nn.Conv2D(${node.data.filter.join(", ")})`, `${node.name}_out = self.${node.name}(${inputVar})`]
     }),
-    "data": simpleNodeDetails("Data In", "The data input of the module", {color: "#EEE", textColor: "#000"}),
-    "out": simpleNodeDetails("Data Out", "The data output of the module", {color: "#EEE", textColor: "#000"}),
-    "flatten": simpleNodeDetails("Flatten", "Reshape the tensor to 1D", {example: "Input size: (128,10,10), output size: (128,100)"}),
-    "linear": simpleNodeDetails("Linear", "Apply a Linear Op with bias"),
-    "softmax": simpleNodeDetails("Softmax", "Turn real-valued logits into probabilities", {link: "https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html", color: "#9355E8"})
+    "data": simpleNodeDetails("Data In", "The data input of the module", {
+        color: "#EEE",
+        textColor: "#000",
+        codeGen: (node, inputVar) => ["", `${node.name}_out = ${inputVar}`]
+    }),
+    "out": simpleNodeDetails("Data Out", "The data output of the module", {color: "#EEE", textColor: "#000",
+        codeGen: (_, inputVar) => ["", `return ${inputVar}`]}),
+    "flatten": simpleNodeDetails("Flatten", "Reshape the tensor to 1D", {example: "Input size: (128,10,10), output size: (128,100)",
+        codeGen: (node, inputVar) => [`self.${node.name} = nn.Flatten()`, `${node.name}_out = self.${node.name}(${inputVar})`]}),
+    "linear": simpleNodeDetails("Linear", "Apply a Linear Op with bias", {"codeGen": (node, inputVar) => [`self.${node.name} = nn.Linear(${node.data.input_dim, node.data.output_dim})`, `${node.name}_out = self.${node.name}(${inputVar})`]}),
+    "softmax": simpleNodeDetails("Softmax", "Turn real-valued logits into probabilities", {
+        link: "https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html",
+        color: "#9355E8",
+        codeGen: (node, inputVar) => [`self.${node.name} = nn.Softmax()`, `${node.name}_out = self.${node.name}(${inputVar})`]
+    })
 };
 
 const nodeDetailsDict = nodeDetailsDict_Torch;

@@ -3,8 +3,10 @@ import * as d3 from "d3";
 import { nodes, nodeDetailsDict } from './nodes.js';
 import { JSONToNodes } from './graph-gen.js';
 import { initSideBar, openSideBar } from './sidebar.js';
+import { initToolBar } from './toolbar.js';
 import './utils.js';
 import './index.css';
+import '@fortawesome/fontawesome-free/js/all.js';
 
 // Create the input graph
 var g = new dagreD3.graphlib.Graph()
@@ -38,6 +40,7 @@ svgGroup.selectAll("g .output .node").on('click', function (d) {
 });
 
 initSideBar();
+initToolBar();
 
 // Expose the variables
 window.svgGroup = svgGroup;
